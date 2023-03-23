@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "beesolver-rust"
+name = "beesolver"
 version = "0.1.0"
