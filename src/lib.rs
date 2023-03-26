@@ -55,11 +55,14 @@ impl Eq for WordResult { }
 pub fn run() -> Result<(), Box<dyn Error>> {
     use puzzle::Puzzle;
 
+    // todo command line parsing to pass these in
     let puzzle = Puzzle::from('d', "ogselm")?;
+    // todo command line parsing to use custom dictionary
     let dict = Dictionary::load()?;
     let solver = Solver::new(dict, puzzle);
     let results = solver.solve();
     
+    // todo return a struct of results to print
     println!("Found a bunch of words! {}", results.len());
     
     Ok(())
