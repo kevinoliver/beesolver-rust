@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn test_solve() -> Result<(), Box<dyn Error>> {
-        let puzzle = Puzzle::new('d', "ogselm")?;
+        let puzzle = Puzzle::from('d', "ogselm")?;
         let dict = Dictionary::load_path("./src/test/solver_dictionary.txt")?;
         let solver = Solver::new(dict, puzzle);
         let results = solver.solve();

@@ -55,7 +55,7 @@ impl Eq for WordResult { }
 pub fn run() -> Result<(), Box<dyn Error>> {
     use puzzle::Puzzle;
 
-    let puzzle = Puzzle::new('d', "ogselm")?;
+    let puzzle = Puzzle::from('d', "ogselm")?;
     let dict = Dictionary::load()?;
     let solver = Solver::new(dict, puzzle);
     let results = solver.solve();
