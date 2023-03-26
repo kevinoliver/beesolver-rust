@@ -1,15 +1,16 @@
+use std::collections::HashSet;
+use std::collections::hash_set::Iter;
 use std::io;
 use std::io::BufRead;
 use std::fs;
 use std::error::Error;
 use std::path::Path;
-use std::slice::Iter;
 
 extern crate unidecode;
 use unidecode::unidecode;
 pub struct Dictionary {
     name: String,
-    words: Vec<String>,
+    words: HashSet<String>,
 }
 
 const DEFAULT_PATH: &str = "./american-english-large";
@@ -34,14 +35,13 @@ impl Dictionary {
     }
 
     fn load_internal(name: &str, filename: &str) -> Result<Dictionary, Box<dyn Error>> {
-        let mut words = Vec::new();
+        let mut words = HashSet::new();
 
         let lines = Dictionary::read_lines(filename)?;
         for line in lines {
             let word = line?;
             if word.len() > 3 {
-                // todo: remove duplicates
-                words.push(unidecode(&word));
+                words.insert(unidecode(&word));
             }
         }
 
@@ -51,6 +51,7 @@ impl Dictionary {
         })
     }
 
+    // todo feels strange that its not a generic Iterator type
     pub fn words(&self) -> Iter<String> {
         self.words.iter()
     }
@@ -83,7 +84,14 @@ mod tests {
 
     #[test]
     fn load_removes_duplicates() -> Result<(), Box<dyn Error>> {
-        // todo ...
+        let dict = Dictionary::load_path(TEST_DICT)?;
+        let mut seen_dogs = false;
+        for w in dict.words() {
+            if w == "dogs" {
+                assert!(!seen_dogs);
+                seen_dogs = true;
+            }
+        }
         Ok(())
     }
 
