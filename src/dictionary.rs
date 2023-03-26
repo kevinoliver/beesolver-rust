@@ -51,11 +51,6 @@ impl Dictionary {
         })
     }
 
-    fn contains(&self, word: &str) -> bool {
-        self.words.contains(&word.to_string())
-    }
-
-    // todo: replace contains to use this?
     pub fn words(&self) -> Iter<String> {
         self.words.iter()
     }
@@ -70,10 +65,19 @@ mod tests {
 
     const TEST_DICT: &str = "src/test/dictionary.txt";
 
+    fn contains(dict: &Dictionary, word: &str) -> bool {
+        for w in dict.words() {
+            if w == word {
+                return true;
+            }
+        }
+        false
+    }
+
     #[test]
     fn load_filters_out_short_words() -> Result<(), Box<dyn Error>> {
         let dict = Dictionary::load_path(TEST_DICT)?;
-        assert!(!dict.contains("cat"));
+        assert!(!contains(&dict, "cat"));
         Ok(())
     }
 
@@ -86,8 +90,8 @@ mod tests {
     #[test]
     fn load_normalizes_accents() -> Result<(), Box<dyn Error>> {
         let dict = Dictionary::load_path(TEST_DICT)?;
-        assert!(!dict.contains("éclair"));
-        assert!(dict.contains("eclair"));
+        assert!(!contains(&dict, "éclair"));
+        assert!(contains(&dict, "eclair"));
         Ok(())
     }
 
