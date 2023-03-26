@@ -47,9 +47,9 @@ impl Puzzle {
                 unique_letters.insert(ch);
             }
             if unique_letters.len() == 7 {
-                WordResult::Pangram
+                WordResult::Pangram(candidate.to_string())
             } else {
-                WordResult::Valid
+                WordResult::Valid(candidate.to_string())
             }
         } else {
             WordResult::Invalid
@@ -82,18 +82,18 @@ mod tests {
     #[test]
     fn puzzle_result_for_valid_words() {
         let puzzle = Puzzle::new('d', "ogselm").unwrap();
-        assert_eq!(WordResult::Valid, puzzle.result_for("dogs"));
-        assert_eq!(WordResult::Valid, puzzle.result_for("doom"));
-        assert_eq!(WordResult::Valid, puzzle.result_for("does"));
-        assert_eq!(WordResult::Valid, puzzle.result_for("moods"));
+        assert_eq!(WordResult::Valid(String::from("dogs")), puzzle.result_for("dogs"));
+        assert_eq!(WordResult::Valid(String::from("doom")), puzzle.result_for("doom"));
+        assert_eq!(WordResult::Valid(String::from("does")), puzzle.result_for("does"));
+        assert_eq!(WordResult::Valid(String::from("moods")), puzzle.result_for("moods"));
     }
 
     #[test]
     fn puzzle_result_for_pangrams() {
         let puzzle = Puzzle::new('d', "ogselm").unwrap();
-        assert_eq!(WordResult::Pangram, puzzle.result_for("dogselm"));
-        assert_eq!(WordResult::Pangram, puzzle.result_for("dogselmm"));
-        assert_eq!(WordResult::Pangram, puzzle.result_for("dogselmdogselm"));
+        assert_eq!(WordResult::Pangram(String::from("dogselm")), puzzle.result_for("dogselm"));
+        assert_eq!(WordResult::Pangram(String::from("dogselmm")), puzzle.result_for("dogselmm"));
+        assert_eq!(WordResult::Pangram(String::from("dogselmdogselm")), puzzle.result_for("dogselmdogselm"));
     }
 
     #[test]

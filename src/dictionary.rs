@@ -3,6 +3,7 @@ use std::io::BufRead;
 use std::fs;
 use std::error::Error;
 use std::path::Path;
+use std::slice::Iter;
 
 extern crate unidecode;
 use unidecode::unidecode;
@@ -52,6 +53,11 @@ impl Dictionary {
 
     fn contains(&self, word: &str) -> bool {
         self.words.contains(&word.to_string())
+    }
+
+    // todo: replace contains to use this?
+    pub fn words(&self) -> Iter<String> {
+        self.words.iter()
     }
 
 }
