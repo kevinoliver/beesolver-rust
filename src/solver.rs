@@ -1,4 +1,25 @@
+use std::slice::Iter;
+
 use crate::{WordResult, dictionary::Dictionary, puzzle::Puzzle};
+
+pub struct Solution {
+    words: Vec<WordResult>,
+    num_pangrams: i32,
+}
+
+impl Solution {
+    pub fn num_pangrams(&self) -> i32 {
+        self.num_pangrams
+    }
+
+    pub fn num_words(&self) -> usize {
+        self.words.len()
+    }
+
+    pub fn words(&self) -> Iter<WordResult> {
+        self.words.iter()
+    }
+}
 
 pub struct Solver {
     dict: Dictionary,
@@ -11,18 +32,26 @@ impl Solver {
         Solver { dict, puzzle }
     }
 
-    pub fn solve(&self) -> Vec<WordResult> {
+    pub fn solve(&self) -> Solution {
         let mut results: Vec<WordResult> = Vec::new();
+        let mut pangrams = 0;
 
         for candidate in self.dict.words() {
-            match self.puzzle.result_for(candidate) {
+            let res = self.puzzle.result_for(candidate);
+            match res {
                 WordResult::Invalid => (),
-                res => results.push(res),
+                WordResult::Valid(_) => results.push(res),
+                WordResult::Pangram(_) => {
+                    pangrams += 1;
+                    results.push(res);
+                },
             }
         }
-
         results.sort();
-        results
+        Solution { 
+            words: results,
+            num_pangrams: pangrams,
+        }
     }
 
 }
@@ -40,12 +69,15 @@ mod tests {
         let puzzle = Puzzle::from('d', "ogselm")?;
         let dict = Dictionary::load_path("./src/test/solver_dictionary.txt")?;
         let solver = Solver::new(dict, puzzle);
-        let results = solver.solve();
+        let solution = solver.solve();
 
-        assert_eq!(3, results.len());
-        assert_eq!(WordResult::Valid(String::from("dogs")), results[0]);
-        assert_eq!(WordResult::Valid(String::from("doom")), results[1]);
-        assert_eq!(WordResult::Pangram(String::from("ogselmd")), results[2]);
+        assert_eq!(3, solution.num_words());
+        assert_eq!(1, solution.num_pangrams());
+
+        let results: Vec<&WordResult> = solution.words().collect();
+        assert_eq!(WordResult::Valid(String::from("dogs")), *results[0]);
+        assert_eq!(WordResult::Valid(String::from("doom")), *results[1]);
+        assert_eq!(WordResult::Pangram(String::from("ogselmd")), *results[2]);
 
         Ok(())
     }

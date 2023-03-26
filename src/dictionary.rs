@@ -30,6 +30,7 @@ impl Dictionary {
         Dictionary::load_internal(DEFAULT_NAME, DEFAULT_PATH)
     }
 
+    // todo should this be String or &str? 
     pub fn load_path(filename: &str) -> Result<Dictionary, Box<dyn Error>> {
         Dictionary::load_internal(filename, filename)
     }

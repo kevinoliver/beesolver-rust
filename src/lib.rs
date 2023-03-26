@@ -2,7 +2,7 @@ mod puzzle;
 mod dictionary;
 mod solver;
 
-use std::{error::Error, cmp::Ordering};
+use std::{error::Error, cmp::Ordering,};
 
 use crate::{dictionary::Dictionary, solver::Solver};
 
@@ -52,18 +52,55 @@ impl PartialOrd for WordResult {
 
 impl Eq for WordResult { }
 
-pub fn run() -> Result<(), Box<dyn Error>> {
+use argh::FromArgs;
+
+#[derive(FromArgs)]
+/// A Spelling Bee solver
+pub struct Config {
+
+    #[argh(positional)]
+    /// the letter required in all words
+    required_letter: char,
+
+    #[argh(positional)]
+    /// the 6 other allowed letters
+    other_letters: String,
+
+    #[argh(option)]
+    /// path to a custom dictionary file
+    dict: Option<String>,
+
+    /// when on, only the stats for the solution are output (default off)
+    #[argh(switch)]
+    no_words_output: bool,
+}
+
+impl Config {
+
+    fn validate(&self) -> Result<(), String> {
+        if let Some(path) = &self.dict {
+            if !std::path::Path::new(path).exists() {
+                return Err(format!("dictionary not found: '{path}'"));
+            }
+        }
+        Ok(())
+    }
+}
+
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     use puzzle::Puzzle;
 
-    // todo command line parsing to pass these in
-    let puzzle = Puzzle::from('d', "ogselm")?;
-    // todo command line parsing to use custom dictionary
-    let dict = Dictionary::load()?;
+    config.validate()?;
+
+    let puzzle = Puzzle::from(config.required_letter, &config.other_letters)?;
+    let dict = match config.dict {
+        Some(path) => Dictionary::load_path(path.as_str())?,
+        None => Dictionary::load()?,
+    };
     let solver = Solver::new(dict, puzzle);
-    let results = solver.solve();
+    let solution = solver.solve();
     
-    // todo return a struct of results to print
-    println!("Found a bunch of words! {}", results.len());
+    println!("Found a bunch of words! {}", solution.num_words());
     
     Ok(())
 }
