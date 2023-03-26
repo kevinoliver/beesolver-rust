@@ -1,20 +1,14 @@
 use std::collections::HashSet;
 
-#[derive(PartialEq, Debug)]
-pub enum WordResult {
-    Invalid,
-    Valid,
-    Pangram,
-}
+use super::WordResult;
 
 pub struct Puzzle {
     required_letter: char,
     allowed_letters: HashSet<char> 
 }
 
-// todo puzzle unit tests
-// todo this should be a separate file right? 
 impl Puzzle {
+
     // todo rename to `from`
     // todo should the error be of type `&str`?
     pub fn new(required_letter: char, other_letters: &str) -> Result<Puzzle, String> {
@@ -66,7 +60,8 @@ impl Puzzle {
 
 #[cfg(test)]
 mod tests {
-    use crate::beesolver::{Puzzle, WordResult};
+    use super::Puzzle;
+    use crate::WordResult;
 
     #[test]
     fn puzzle_new_other_letters_must_have_6_letters() {

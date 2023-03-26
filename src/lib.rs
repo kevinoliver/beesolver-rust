@@ -1,11 +1,17 @@
-mod beesolver;
+mod puzzle;
 
 use std::error::Error;
 
-pub fn run() -> Result<(), Box<dyn Error>> {
-    use beesolver::{Puzzle, WordResult};
+#[derive(PartialEq, Debug)]
+pub enum WordResult {
+    Invalid,
+    Valid,
+    Pangram,
+}
 
-    println!("Hello, world!");
+pub fn run() -> Result<(), Box<dyn Error>> {
+    use puzzle::Puzzle;
+
     let puzzle = Puzzle::new('d', "ogselm")?;
 
     let out = match puzzle.result_for("dogs") {
