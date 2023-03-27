@@ -71,10 +71,9 @@ pub struct Config {
     /// path to a custom dictionary file
     dict: Option<String>,
 
-    /// when on, only the stats for the solution are output (default off)
-    #[argh(switch)]
-    no_words_output: bool,
-    // todo make this match the beesolver-go behavior (option with default to false)
+    /// when off, only the stats for the solution are output (default on)
+    #[argh(option, default="true")]
+    words_output: bool,
 }
 
 impl Config {
@@ -96,8 +95,8 @@ impl Config {
         &self.other_letters
     }
 
-    pub fn no_words_output(&self) -> bool {
-        self.no_words_output
+    pub fn words_output(&self) -> bool {
+        self.words_output
     }
 }
 

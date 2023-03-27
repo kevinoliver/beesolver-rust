@@ -36,11 +36,13 @@ fn print_solution(config: &Config, solution: Solution) {
 //   Time loading dictionary: xyz ms
 //   Time solving: xyz ms
     println!("🐝🐝🐝🐝🐝");
-    for res in solution.words() {
-        match res {
-            WordResult::Invalid => (),
-            WordResult::Valid(word) => println!("{word}"),
-            WordResult::Pangram(word) => println!("{word} 🍳"),
-        } 
+    if config.words_output() {
+        for res in solution.words() {
+            match res {
+                WordResult::Invalid => (),
+                WordResult::Valid(word) => println!("{word}"),
+                WordResult::Pangram(word) => println!("{word} 🍳"),
+            } 
+        }
     }
 }
