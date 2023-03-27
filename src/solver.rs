@@ -3,8 +3,7 @@ use std::slice::Iter;
 use crate::{WordResult, dictionary::Dictionary, puzzle::Puzzle};
 
 pub struct Solution {
-    // todo rename to results
-    words: Vec<WordResult>,
+    results: Vec<WordResult>,
     num_pangrams: i32,
 }
 
@@ -14,12 +13,11 @@ impl Solution {
     }
 
     pub fn num_words(&self) -> usize {
-        self.words.len()
+        self.results.len()
     }
 
-    // todo rename to results
-    pub fn words(&self) -> Iter<WordResult> {
-        self.words.iter()
+    pub fn results(&self) -> Iter<WordResult> {
+        self.results.iter()
     }
 }
 
@@ -51,7 +49,7 @@ impl Solver {
         }
         results.sort();
         Solution { 
-            words: results,
+            results,
             num_pangrams: pangrams,
         }
     }
@@ -76,7 +74,7 @@ mod tests {
         assert_eq!(3, solution.num_words());
         assert_eq!(1, solution.num_pangrams());
 
-        let results: Vec<&WordResult> = solution.words().collect();
+        let results: Vec<&WordResult> = solution.results().collect();
         assert_eq!(WordResult::Valid(String::from("dogs")), *results[0]);
         assert_eq!(WordResult::Valid(String::from("doom")), *results[1]);
         assert_eq!(WordResult::Pangram(String::from("ogselmd")), *results[2]);

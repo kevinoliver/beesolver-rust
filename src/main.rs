@@ -37,7 +37,7 @@ fn print_solution(config: &Config, solution: Solution) {
 //   Time solving: xyz ms
     println!("🐝🐝🐝🐝🐝");
     if config.words_output() {
-        for res in solution.words() {
+        for res in solution.results() {
             match res {
                 WordResult::Invalid => (),
                 WordResult::Valid(word) => println!("{word}"),
