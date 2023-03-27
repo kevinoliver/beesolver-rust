@@ -21,12 +21,12 @@ impl Solution {
     }
 }
 
-pub struct Solver {
-    dict: Dictionary,
+pub struct Solver<'a> {
+    dict: Dictionary<'a>,
     puzzle: Puzzle,
 }
 
-impl Solver {
+impl<'a> Solver<'a> {
 
     pub fn new(dict: Dictionary, puzzle: Puzzle) -> Solver {
         Solver { dict, puzzle }

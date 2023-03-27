@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::collections::hash_set::Iter;
 use std::io;
 use std::io::BufRead;
 use std::fs;
@@ -8,15 +7,16 @@ use std::path::Path;
 
 extern crate unidecode;
 use unidecode::unidecode;
-pub struct Dictionary {
-    name: String,
-    words: HashSet<String>,
-}
 
 const DEFAULT_PATH: &str = "./american-english-large";
 const DEFAULT_NAME: &str = "(default)";
 
-impl Dictionary {
+pub struct Dictionary<'a> {
+    name: &'a str,
+    words: HashSet<String>,
+}
+
+impl<'a> Dictionary<'a> {
 
     // The output is wrapped in a Result to allow matching on errors
     // Returns an Iterator to the Reader of the lines of the file.
@@ -26,16 +26,15 @@ impl Dictionary {
         Ok(io::BufReader::new(file).lines())
     }
 
-    pub fn load() -> Result<Dictionary, Box<dyn Error>> {
+    pub fn load() -> Result<Dictionary<'a>, Box<dyn Error>> {
         Dictionary::load_internal(DEFAULT_NAME, DEFAULT_PATH)
     }
 
-    // todo should this be String or &str? 
-    pub fn load_path(filename: &str) -> Result<Dictionary, Box<dyn Error>> {
+    pub fn load_path(filename: &'a str) -> Result<Dictionary<'a>, Box<dyn Error>> {
         Dictionary::load_internal(filename, filename)
     }
 
-    fn load_internal(name: &str, filename: &str) -> Result<Dictionary, Box<dyn Error>> {
+    fn load_internal(name: &'a str, filename: &str) -> Result<Dictionary<'a>, Box<dyn Error>> {
         let mut words = HashSet::new();
 
         let lines = Dictionary::read_lines(filename)?;
@@ -47,14 +46,14 @@ impl Dictionary {
         }
 
         Ok(Dictionary { 
-            name: name.to_string(),
+            name,
             words 
         })
     }
 
-    // todo feels strange that its not a generic Iterator type
-    pub fn words(&self) -> Iter<String> {
-        self.words.iter()
+    // todo not sure if this is the right way to return a generic iterator. maybe?
+    pub fn words(&self) -> impl Iterator<Item = &str> {
+        self.words.iter().map(|w| &w[..])
     }
 
 }

@@ -9,7 +9,6 @@ pub struct Puzzle {
 
 impl Puzzle {
 
-    // todo should the error be of type `&str`?
     pub fn from(required_letter: char, other_letters: &str) -> Result<Puzzle, String> {
         if other_letters.len() != 6 {
             return Err(format!("Must have 6 other letters, found {}", other_letters.len()))

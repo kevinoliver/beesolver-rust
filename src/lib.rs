@@ -6,6 +6,7 @@ use std::{error::Error, cmp::Ordering,};
 
 use crate::{dictionary::Dictionary, solver::Solver};
 
+// todo not sure about these Strings
 #[derive(Debug)]
 pub enum WordResult {
     Invalid,
@@ -19,8 +20,8 @@ impl WordResult {
     pub fn word(&self) -> Option<String> {
         match self {
             Invalid => None,
-            Valid(w) => Some(w.to_string()),
-            Pangram(w) => Some(w.to_string()),
+            Valid(w) => Some(w.clone()),
+            Pangram(w) => Some(w.clone()),
         }
     }
 
@@ -91,8 +92,8 @@ impl Config {
         self.required_letter
     }
 
-    pub fn other_letters(&self) -> &String {
-        &self.other_letters
+    pub fn other_letters(&self) -> &str {
+        &self.other_letters[..]
     }
 
     pub fn words_output(&self) -> bool {
