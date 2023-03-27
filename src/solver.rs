@@ -3,6 +3,7 @@ use std::slice::Iter;
 use crate::{WordResult, dictionary::Dictionary, puzzle::Puzzle};
 
 pub struct Solution {
+    // todo rename to results
     words: Vec<WordResult>,
     num_pangrams: i32,
 }
@@ -16,6 +17,7 @@ impl Solution {
         self.words.len()
     }
 
+    // todo rename to results
     pub fn words(&self) -> Iter<WordResult> {
         self.words.iter()
     }

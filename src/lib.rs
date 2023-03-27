@@ -1,6 +1,6 @@
-mod puzzle;
-mod dictionary;
-mod solver;
+pub mod puzzle;
+pub mod dictionary;
+pub mod solver;
 
 use std::{error::Error, cmp::Ordering,};
 
@@ -53,6 +53,7 @@ impl PartialOrd for WordResult {
 impl Eq for WordResult { }
 
 use argh::FromArgs;
+use solver::Solution;
 
 #[derive(FromArgs)]
 /// A Spelling Bee solver
@@ -73,6 +74,7 @@ pub struct Config {
     /// when on, only the stats for the solution are output (default off)
     #[argh(switch)]
     no_words_output: bool,
+    // todo make this match the beesolver-go behavior (option with default to false)
 }
 
 impl Config {
@@ -85,22 +87,30 @@ impl Config {
         }
         Ok(())
     }
+
+    pub fn required_letter(&self) -> char {
+        self.required_letter
+    }
+
+    pub fn other_letters(&self) -> &String {
+        &self.other_letters
+    }
+
+    pub fn no_words_output(&self) -> bool {
+        self.no_words_output
+    }
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: &Config) -> Result<Solution, Box<dyn Error>> {
     use puzzle::Puzzle;
 
     config.validate()?;
 
     let puzzle = Puzzle::from(config.required_letter, &config.other_letters)?;
-    let dict = match config.dict {
+    let dict = match &config.dict {
         Some(path) => Dictionary::load_path(path.as_str())?,
         None => Dictionary::load()?,
     };
     let solver = Solver::new(dict, puzzle);
-    let solution = solver.solve();
-    
-    println!("Found a bunch of words! {}", solution.num_words());
-    
-    Ok(())
+    Ok(solver.solve())
 }
