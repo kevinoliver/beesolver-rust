@@ -56,6 +56,14 @@ impl<'a> Dictionary<'a> {
         self.words.iter().map(|w| &w[..])
     }
 
+    pub fn name(&self) -> String {
+        self.name.to_string()
+    }
+
+    pub fn num_words(&self) -> usize {
+        self.words.len()
+    }
+
 }
 
 #[cfg(test)]

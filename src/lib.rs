@@ -2,7 +2,7 @@ pub mod puzzle;
 pub mod dictionary;
 pub mod solver;
 
-use std::{error::Error, cmp::Ordering,};
+use std::{error::Error, cmp::Ordering, time::{Duration, Instant},};
 
 use crate::{dictionary::Dictionary, solver::Solver};
 
@@ -101,16 +101,37 @@ impl Config {
     }
 }
 
-pub fn run(config: &Config) -> Result<Solution, Box<dyn Error>> {
+pub struct Metadata {
+    pub dictionary_size: usize,
+    pub dictionary_name: String,
+    pub loading_dictionary: Duration,
+    pub solving: Duration,
+}
+
+pub fn run(config: &Config) -> Result<(Solution, Metadata), Box<dyn Error>> {
     use puzzle::Puzzle;
 
     config.validate()?;
 
     let puzzle = Puzzle::from(config.required_letter, &config.other_letters)?;
+    let start = Instant::now();
     let dict = match &config.dict {
         Some(path) => Dictionary::load_path(path.as_str())?,
         None => Dictionary::load()?,
     };
+    let dict_size = dict.num_words();
+    let dict_name = dict.name();
+    let loading_dictionary = start.elapsed();
     let solver = Solver::new(dict, puzzle);
-    Ok(solver.solve())
+
+    let start = Instant::now();
+    let solution = solver.solve();
+    let solving = start.elapsed();
+
+    Ok((solution, Metadata { 
+        dictionary_size: dict_size,
+        dictionary_name: dict_name,
+        loading_dictionary, 
+        solving 
+    }))
 }
