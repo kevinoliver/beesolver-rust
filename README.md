@@ -2,7 +2,7 @@
 
 Solves the [New York Times Spelling Bee](https://www.nytimes.com/puzzles/spelling-bee).
 
-Their dictionary is not the same as the one included so you find missing words as well as extras.
+Their dictionary is not the same as the one included so you may find missing words as well as extras.
 
 ## Usage
 
