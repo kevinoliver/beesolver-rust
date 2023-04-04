@@ -11,12 +11,12 @@ use unidecode::unidecode;
 const DEFAULT_PATH: &str = "./american-english-large";
 const DEFAULT_NAME: &str = "(default)";
 
-pub struct Dictionary<'a> {
-    name: &'a str,
+pub struct Dictionary {
+    name: String,
     words: HashSet<String>,
 }
 
-impl<'a> Dictionary<'a> {
+impl Dictionary {
 
     // The output is wrapped in a Result to allow matching on errors
     // Returns an Iterator to the Reader of the lines of the file.
@@ -26,15 +26,15 @@ impl<'a> Dictionary<'a> {
         Ok(io::BufReader::new(file).lines())
     }
 
-    pub fn load() -> Result<Dictionary<'a>, Box<dyn Error>> {
+    pub fn load() -> Result<Dictionary, Box<dyn Error>> {
         Dictionary::load_internal(DEFAULT_NAME, DEFAULT_PATH)
     }
 
-    pub fn load_path(filename: &'a str) -> Result<Dictionary<'a>, Box<dyn Error>> {
+    pub fn load_path(filename: &str) -> Result<Dictionary, Box<dyn Error>> {
         Dictionary::load_internal(filename, filename)
     }
 
-    fn load_internal(name: &'a str, filename: &str) -> Result<Dictionary<'a>, Box<dyn Error>> {
+    fn load_internal(name: &str, filename: &str) -> Result<Dictionary, Box<dyn Error>> {
         let mut words = HashSet::new();
 
         let lines = Dictionary::read_lines(filename)?;
@@ -46,7 +46,7 @@ impl<'a> Dictionary<'a> {
         }
 
         Ok(Dictionary { 
-            name,
+            name: name.to_string(),
             words 
         })
     }
