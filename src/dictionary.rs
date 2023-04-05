@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::collections::hash_set::Iter;
 use std::io;
 use std::io::BufRead;
 use std::fs;
@@ -51,9 +52,8 @@ impl Dictionary {
         })
     }
 
-    // todo not sure if this is the right way to return a generic iterator. maybe?
-    pub fn words(&self) -> impl Iterator<Item = &str> {
-        self.words.iter().map(|w| &w[..])
+    fn iter(&self) -> DictIter<'_> {
+        DictIter { iter: self.words.iter() }
     }
 
     pub fn name(&self) -> String {
@@ -66,6 +66,28 @@ impl Dictionary {
 
 }
 
+pub struct DictIter<'a> { 
+   iter: Iter<'a, String> 
+}
+
+impl<'a> Iterator for DictIter<'a> {
+    type Item = &'a String;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next()
+    }
+}
+
+impl<'a> IntoIterator for &'a Dictionary {
+    type Item = &'a String;
+
+    type IntoIter = DictIter<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::error::Error;
@@ -75,7 +97,7 @@ mod tests {
     const TEST_DICT: &str = "src/test/dictionary.txt";
 
     fn contains(dict: &Dictionary, word: &str) -> bool {
-        for w in dict.words() {
+        for w in dict {
             if w == word {
                 return true;
             }
@@ -94,7 +116,7 @@ mod tests {
     fn load_removes_duplicates() -> Result<(), Box<dyn Error>> {
         let dict = Dictionary::load_path(TEST_DICT)?;
         let mut seen_dogs = false;
-        for w in dict.words() {
+        for w in &dict {
             if w == "dogs" {
                 assert!(!seen_dogs);
                 seen_dogs = true;

@@ -36,7 +36,7 @@ impl Solver {
         let mut results: Vec<WordResult> = Vec::new();
         let mut pangrams = 0;
 
-        for candidate in self.dict.words() {
+        for candidate in &self.dict {
             let res = self.puzzle.result_for(candidate);
             match res {
                 WordResult::Invalid => (),
