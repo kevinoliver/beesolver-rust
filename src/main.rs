@@ -1,17 +1,16 @@
 use std::process;
 
-use beesolver::{Config, Metadata};
 use beesolver::solver::Solution;
+use beesolver::{Config, Metadata};
 
 fn main() {
     let config: beesolver::Config = argh::from_env();
     match beesolver::run(&config) {
-        Ok((solution, metadata)) => 
-            print_solution(&config, solution, metadata),
+        Ok((solution, metadata)) => print_solution(&config, solution, metadata),
         Err(err) => {
             println!("{err}");
             process::exit(1);
-        },
+        }
     }
 }
 
@@ -31,7 +30,10 @@ fn print_solution(config: &Config, solution: Solution, metadata: Metadata) {
     println!();
     println!("  Words: {}", solution.num_words());
     println!("  Pangrams: {}", solution.num_pangrams());
-    println!("  Time loading dictionary: {} ms", metadata.loading_dictionary.as_millis());
+    println!(
+        "  Time loading dictionary: {} ms",
+        metadata.loading_dictionary.as_millis()
+    );
     println!("  Time solving: {} ms", metadata.solving.as_millis());
     println!("🐝🐝🐝🐝🐝");
     if config.words_output() {
@@ -40,7 +42,7 @@ fn print_solution(config: &Config, solution: Solution, metadata: Metadata) {
                 WordResult::Invalid => (),
                 WordResult::Valid(word) => println!("{word}"),
                 WordResult::Pangram(word) => println!("{word} 🍳"),
-            } 
+            }
         }
     }
 }

@@ -1,8 +1,12 @@
-pub mod puzzle;
 pub mod dictionary;
+pub mod puzzle;
 pub mod solver;
 
-use std::{error::Error, cmp::Ordering, time::{Duration, Instant},};
+use std::{
+    cmp::Ordering,
+    error::Error,
+    time::{Duration, Instant},
+};
 
 use crate::{dictionary::Dictionary, solver::Solver};
 
@@ -43,7 +47,7 @@ impl PartialOrd for WordResult {
     }
 }
 
-impl Eq for WordResult { }
+impl Eq for WordResult {}
 
 use argh::FromArgs;
 use solver::Solution;
@@ -51,7 +55,6 @@ use solver::Solution;
 #[derive(FromArgs)]
 /// A Spelling Bee solver
 pub struct Config {
-
     #[argh(positional)]
     /// the letter required in all words
     required_letter: char,
@@ -65,12 +68,11 @@ pub struct Config {
     dict: Option<String>,
 
     /// when off, only the stats for the solution are output (default on)
-    #[argh(option, default="true")]
+    #[argh(option, default = "true")]
     words_output: bool,
 }
 
 impl Config {
-
     fn validate(&self) -> Result<(), String> {
         if let Some(path) = &self.dict {
             if !std::path::Path::new(path).exists() {
@@ -120,10 +122,13 @@ pub fn run(config: &Config) -> Result<(Solution, Metadata), Box<dyn Error>> {
     let solution = solver.solve();
     let solving = start.elapsed();
 
-    Ok((solution, Metadata { 
-        dictionary_size: dict_size,
-        dictionary_name: dict_name,
-        loading_dictionary, 
-        solving 
-    }))
+    Ok((
+        solution,
+        Metadata {
+            dictionary_size: dict_size,
+            dictionary_name: dict_name,
+            loading_dictionary,
+            solving,
+        },
+    ))
 }

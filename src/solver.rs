@@ -1,6 +1,6 @@
 use std::slice::Iter;
 
-use crate::{WordResult, dictionary::Dictionary, puzzle::Puzzle};
+use crate::{dictionary::Dictionary, puzzle::Puzzle, WordResult};
 
 pub struct Solution {
     results: Vec<WordResult>,
@@ -27,7 +27,6 @@ pub struct Solver {
 }
 
 impl Solver {
-
     pub fn new(dict: Dictionary, puzzle: Puzzle) -> Solver {
         Solver { dict, puzzle }
     }
@@ -44,23 +43,22 @@ impl Solver {
                 WordResult::Pangram(_) => {
                     pangrams += 1;
                     results.push(res);
-                },
+                }
             }
         }
         results.sort();
-        Solution { 
+        Solution {
             results,
             num_pangrams: pangrams,
         }
     }
-
 }
 
 #[cfg(test)]
 mod tests {
     use std::error::Error;
 
-    use crate::{puzzle::Puzzle, dictionary::Dictionary, WordResult};
+    use crate::{dictionary::Dictionary, puzzle::Puzzle, WordResult};
 
     use super::Solver;
 
@@ -81,5 +79,4 @@ mod tests {
 
         Ok(())
     }
-
 }

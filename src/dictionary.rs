@@ -1,9 +1,9 @@
-use std::collections::HashSet;
 use std::collections::hash_set::Iter;
+use std::collections::HashSet;
+use std::error::Error;
+use std::fs;
 use std::io;
 use std::io::BufRead;
-use std::fs;
-use std::error::Error;
 use std::path::Path;
 
 extern crate unidecode;
@@ -15,14 +15,15 @@ pub struct Dictionary {
 }
 
 impl Dictionary {
-
     const DEFAULT_PATH: &str = "./american-english-large";
     const DEFAULT_NAME: &str = "(default)";
-        
+
     // The output is wrapped in a Result to allow matching on errors
     // Returns an Iterator to the Reader of the lines of the file.
     fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<fs::File>>>
-    where P: AsRef<Path>, {
+    where
+        P: AsRef<Path>,
+    {
         let file = fs::File::open(filename)?;
         Ok(io::BufReader::new(file).lines())
     }
@@ -46,14 +47,16 @@ impl Dictionary {
             }
         }
 
-        Ok(Dictionary { 
+        Ok(Dictionary {
             name: name.to_string(),
-            words 
+            words,
         })
     }
 
     fn iter(&self) -> DictIter<'_> {
-        DictIter { iter: self.words.iter() }
+        DictIter {
+            iter: self.words.iter(),
+        }
     }
 
     pub fn name(&self) -> String {
@@ -73,11 +76,10 @@ impl Dictionary {
         }
         false
     }
-
 }
 
-pub struct DictIter<'a> { 
-   iter: Iter<'a, String> 
+pub struct DictIter<'a> {
+    iter: Iter<'a, String>,
 }
 
 impl<'a> Iterator for DictIter<'a> {
@@ -133,5 +135,4 @@ mod tests {
         assert!(dict.contains("eclair"));
         Ok(())
     }
-
 }

@@ -4,27 +4,34 @@ use super::WordResult;
 
 pub struct Puzzle {
     required_letter: char,
-    allowed_letters: HashSet<char> 
+    allowed_letters: HashSet<char>,
 }
 
 impl Puzzle {
-
     pub fn from(required_letter: char, other_letters: &str) -> Result<Puzzle, String> {
         if other_letters.len() != 6 {
-            return Err(format!("Must have 6 other letters, found {}", other_letters.len()))
+            return Err(format!(
+                "Must have 6 other letters, found {}",
+                other_letters.len()
+            ));
         }
-    
+
         let mut allowed_letters = HashSet::new();
         for ch in other_letters.chars() {
             if !allowed_letters.insert(ch) {
-                return Err(format!("other letters cannot have any duplicates: '{ch}'"))
+                return Err(format!("other letters cannot have any duplicates: '{ch}'"));
             }
         }
         if !allowed_letters.insert(required_letter) {
-            return Err(format!("other letters cannot contain the required letter: '{required_letter}'"))
+            return Err(format!(
+                "other letters cannot contain the required letter: '{required_letter}'"
+            ));
         }
-    
-        Ok(Puzzle { required_letter, allowed_letters })
+
+        Ok(Puzzle {
+            required_letter,
+            allowed_letters,
+        })
     }
 
     pub fn result_for(&self, candidate: &str) -> WordResult {
@@ -53,7 +60,6 @@ impl Puzzle {
             WordResult::Invalid
         }
     }
-    
 }
 
 #[cfg(test)]
@@ -80,18 +86,39 @@ mod tests {
     #[test]
     fn puzzle_result_for_valid_words() {
         let puzzle = Puzzle::from('d', "ogselm").unwrap();
-        assert_eq!(WordResult::Valid(String::from("dogs")), puzzle.result_for("dogs"));
-        assert_eq!(WordResult::Valid(String::from("doom")), puzzle.result_for("doom"));
-        assert_eq!(WordResult::Valid(String::from("does")), puzzle.result_for("does"));
-        assert_eq!(WordResult::Valid(String::from("moods")), puzzle.result_for("moods"));
+        assert_eq!(
+            WordResult::Valid(String::from("dogs")),
+            puzzle.result_for("dogs")
+        );
+        assert_eq!(
+            WordResult::Valid(String::from("doom")),
+            puzzle.result_for("doom")
+        );
+        assert_eq!(
+            WordResult::Valid(String::from("does")),
+            puzzle.result_for("does")
+        );
+        assert_eq!(
+            WordResult::Valid(String::from("moods")),
+            puzzle.result_for("moods")
+        );
     }
 
     #[test]
     fn puzzle_result_for_pangrams() {
         let puzzle = Puzzle::from('d', "ogselm").unwrap();
-        assert_eq!(WordResult::Pangram(String::from("dogselm")), puzzle.result_for("dogselm"));
-        assert_eq!(WordResult::Pangram(String::from("dogselmm")), puzzle.result_for("dogselmm"));
-        assert_eq!(WordResult::Pangram(String::from("dogselmdogselm")), puzzle.result_for("dogselmdogselm"));
+        assert_eq!(
+            WordResult::Pangram(String::from("dogselm")),
+            puzzle.result_for("dogselm")
+        );
+        assert_eq!(
+            WordResult::Pangram(String::from("dogselmm")),
+            puzzle.result_for("dogselmm")
+        );
+        assert_eq!(
+            WordResult::Pangram(String::from("dogselmdogselm")),
+            puzzle.result_for("dogselmdogselm")
+        );
     }
 
     #[test]
@@ -106,5 +133,4 @@ mod tests {
         let puzzle = Puzzle::from('d', "ogselm").unwrap();
         assert_eq!(WordResult::Invalid, puzzle.result_for("dogz"));
     }
-
 }
