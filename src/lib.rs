@@ -17,11 +17,11 @@ pub enum WordResult {
 use WordResult::*;
 
 impl WordResult {
-    pub fn word(&self) -> Option<String> {
+    fn word(&self) -> Option<&str> {
         match self {
             Invalid => None,
-            Valid(w) => Some(w.clone()),
-            Pangram(w) => Some(w.clone()),
+            Valid(w) => Some(w),
+            Pangram(w) => Some(w),
         }
     }
 
