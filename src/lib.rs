@@ -6,7 +6,6 @@ use std::{error::Error, cmp::Ordering, time::{Duration, Instant},};
 
 use crate::{dictionary::Dictionary, solver::Solver};
 
-// todo not sure about these Strings
 #[derive(Debug)]
 pub enum WordResult {
     Invalid,
@@ -22,13 +21,6 @@ impl WordResult {
             Invalid => None,
             Valid(w) => Some(w),
             Pangram(w) => Some(w),
-        }
-    }
-
-    pub fn is_pangram(&self) -> bool {
-        match self {
-            Pangram(_) => false,
-            _ => true,
         }
     }
 }
