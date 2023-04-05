@@ -1,6 +1,44 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 
-use super::WordResult;
+#[derive(Debug)]
+pub enum WordResult {
+    Invalid,
+    Valid(String),
+    Pangram(String),
+}
+
+use WordResult::*;
+
+impl WordResult {
+    fn word(&self) -> Option<&str> {
+        match self {
+            Invalid => None,
+            Valid(w) => Some(w),
+            Pangram(w) => Some(w),
+        }
+    }
+}
+
+impl PartialEq for WordResult {
+    fn eq(&self, other: &Self) -> bool {
+        self.word() == other.word()
+    }
+}
+
+impl Ord for WordResult {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.word().cmp(&other.word())
+    }
+}
+
+impl PartialOrd for WordResult {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.word().partial_cmp(&other.word())
+    }
+}
+
+impl Eq for WordResult {}
 
 pub struct Puzzle {
     required_letter: char,
@@ -65,7 +103,7 @@ impl Puzzle {
 #[cfg(test)]
 mod tests {
     use super::Puzzle;
-    use crate::WordResult;
+    use super::WordResult;
 
     #[test]
     fn puzzle_new_other_letters_must_have_6_letters() {

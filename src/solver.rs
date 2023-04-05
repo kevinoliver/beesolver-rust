@@ -1,6 +1,6 @@
-use std::slice::Iter;
+use std::{slice::Iter, time::Duration};
 
-use crate::{dictionary::Dictionary, puzzle::Puzzle, WordResult};
+use crate::{dictionary::Dictionary, puzzle::Puzzle, puzzle::WordResult};
 
 pub struct Solution {
     results: Vec<WordResult>,
@@ -19,6 +19,13 @@ impl Solution {
     pub fn results(&self) -> Iter<WordResult> {
         self.results.iter()
     }
+}
+
+pub struct Metadata {
+    pub dictionary_size: usize,
+    pub dictionary_name: String,
+    pub loading_dictionary: Duration,
+    pub solving: Duration,
 }
 
 pub struct Solver {
@@ -58,7 +65,7 @@ impl Solver {
 mod tests {
     use std::error::Error;
 
-    use crate::{dictionary::Dictionary, puzzle::Puzzle, WordResult};
+    use crate::{dictionary::Dictionary, puzzle::Puzzle, puzzle::WordResult};
 
     use super::Solver;
 

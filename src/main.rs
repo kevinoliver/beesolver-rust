@@ -1,10 +1,11 @@
 use std::process;
 
+use beesolver::config::Config;
+use beesolver::solver::Metadata;
 use beesolver::solver::Solution;
-use beesolver::{Config, Metadata};
 
 fn main() {
-    let config: beesolver::Config = argh::from_env();
+    let config: beesolver::config::Config = argh::from_env();
     match beesolver::run(&config) {
         Ok((solution, metadata)) => print_solution(&config, solution, metadata),
         Err(err) => {
@@ -15,7 +16,7 @@ fn main() {
 }
 
 fn print_solution(config: &Config, solution: Solution, metadata: Metadata) {
-    use beesolver::WordResult;
+    use beesolver::puzzle::WordResult;
 
     println!("🐝");
     println!("Hello and welcome to Spelling Bee Solver");
