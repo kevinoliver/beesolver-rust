@@ -9,9 +9,6 @@ use std::path::Path;
 extern crate unidecode;
 use unidecode::unidecode;
 
-const DEFAULT_PATH: &str = "./american-english-large";
-const DEFAULT_NAME: &str = "(default)";
-
 pub struct Dictionary {
     name: String,
     words: HashSet<String>,
@@ -19,6 +16,9 @@ pub struct Dictionary {
 
 impl Dictionary {
 
+    const DEFAULT_PATH: &str = "./american-english-large";
+    const DEFAULT_NAME: &str = "(default)";
+        
     // The output is wrapped in a Result to allow matching on errors
     // Returns an Iterator to the Reader of the lines of the file.
     fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<fs::File>>>
@@ -28,7 +28,7 @@ impl Dictionary {
     }
 
     pub fn load() -> Result<Dictionary, Box<dyn Error>> {
-        Dictionary::load_internal(DEFAULT_NAME, DEFAULT_PATH)
+        Dictionary::load_internal(Dictionary::DEFAULT_NAME, Dictionary::DEFAULT_PATH)
     }
 
     pub fn load_path(filename: &str) -> Result<Dictionary, Box<dyn Error>> {
