@@ -64,6 +64,16 @@ impl Dictionary {
         self.words.len()
     }
 
+    #[cfg(test)]
+    fn contains(&self, word: &str) -> bool {
+        for w in &self.words {
+            if w == word {
+                return true;
+            }
+        }
+        false
+    }
+
 }
 
 pub struct DictIter<'a> { 
@@ -96,19 +106,10 @@ mod tests {
 
     const TEST_DICT: &str = "src/test/dictionary.txt";
 
-    fn contains(dict: &Dictionary, word: &str) -> bool {
-        for w in dict {
-            if w == word {
-                return true;
-            }
-        }
-        false
-    }
-
     #[test]
     fn load_filters_out_short_words() -> Result<(), Box<dyn Error>> {
         let dict = Dictionary::load_path(TEST_DICT)?;
-        assert!(!contains(&dict, "cat"));
+        assert!(!dict.contains("cat"));
         Ok(())
     }
 
@@ -128,8 +129,8 @@ mod tests {
     #[test]
     fn load_normalizes_accents() -> Result<(), Box<dyn Error>> {
         let dict = Dictionary::load_path(TEST_DICT)?;
-        assert!(!contains(&dict, "éclair"));
-        assert!(contains(&dict, "eclair"));
+        assert!(!dict.contains("éclair"));
+        assert!(dict.contains("eclair"));
         Ok(())
     }
 
