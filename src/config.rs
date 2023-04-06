@@ -35,7 +35,7 @@ impl Config {
     }
 
     pub fn other_letters(&self) -> &str {
-        &self.other_letters[..]
+        &self.other_letters
     }
 
     pub fn words_output(&self) -> bool {
