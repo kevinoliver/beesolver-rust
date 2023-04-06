@@ -10,6 +10,8 @@ pub enum WordResult {
 
 use WordResult::*;
 
+use crate::err::SolverError;
+
 impl WordResult {
     fn word(&self) -> Option<&str> {
         match self {
@@ -46,24 +48,24 @@ pub struct Puzzle {
 }
 
 impl Puzzle {
-    pub fn from(required_letter: char, other_letters: &str) -> Result<Puzzle, String> {
+    pub fn from(required_letter: char, other_letters: &str) -> Result<Puzzle, SolverError> {
         if other_letters.len() != 6 {
-            return Err(format!(
+            return Err(SolverError::InvalidPuzzle(format!(
                 "Must have 6 other letters, found {}",
                 other_letters.len()
-            ));
+            )));
         }
 
         let mut allowed_letters = HashSet::new();
         for ch in other_letters.chars() {
             if !allowed_letters.insert(ch) {
-                return Err(format!("other letters cannot have any duplicates: '{ch}'"));
+                return Err(SolverError::InvalidPuzzle(format!("other letters cannot have any duplicates: '{ch}'")));
             }
         }
         if !allowed_letters.insert(required_letter) {
-            return Err(format!(
+            return Err(SolverError::InvalidPuzzle(format!(
                 "other letters cannot contain the required letter: '{required_letter}'"
-            ));
+            )));
         }
 
         Ok(Puzzle {

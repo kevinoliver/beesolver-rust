@@ -63,14 +63,12 @@ impl Solver {
 
 #[cfg(test)]
 mod tests {
-    use std::error::Error;
-
-    use crate::{dictionary::Dictionary, puzzle::Puzzle, puzzle::WordResult};
+    use crate::{dictionary::Dictionary, puzzle::Puzzle, puzzle::WordResult, err::SolverError};
 
     use super::Solver;
 
     #[test]
-    fn test_solve() -> Result<(), Box<dyn Error>> {
+    fn test_solve() -> Result<(), SolverError> {
         let puzzle = Puzzle::from('d', "ogselm")?;
         let dict = Dictionary::load_path("./src/test/solver_dictionary.txt")?;
         let solver = Solver::new(dict, puzzle);

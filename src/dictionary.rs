@@ -1,6 +1,5 @@
 use std::collections::hash_set::Iter;
 use std::collections::HashSet;
-use std::error::Error;
 use std::fs;
 use std::io;
 use std::io::BufRead;
@@ -8,6 +7,8 @@ use std::path::Path;
 
 extern crate unidecode;
 use unidecode::unidecode;
+
+use crate::err::SolverError;
 
 pub struct Dictionary {
     name: String,
@@ -28,15 +29,15 @@ impl Dictionary {
         Ok(io::BufReader::new(file).lines())
     }
 
-    pub fn load() -> Result<Dictionary, Box<dyn Error>> {
+    pub fn load() -> Result<Dictionary, SolverError> {
         Dictionary::load_internal(Dictionary::DEFAULT_NAME, Dictionary::DEFAULT_PATH)
     }
 
-    pub fn load_path(filename: &str) -> Result<Dictionary, Box<dyn Error>> {
+    pub fn load_path(filename: &str) -> Result<Dictionary, SolverError> {
         Dictionary::load_internal(filename, filename)
     }
 
-    fn load_internal(name: &str, filename: &str) -> Result<Dictionary, Box<dyn Error>> {
+    fn load_internal(name: &str, filename: &str) -> Result<Dictionary, SolverError> {
         let mut words = HashSet::new();
 
         let lines = Dictionary::read_lines(filename)?;
@@ -102,21 +103,21 @@ impl<'a> IntoIterator for &'a Dictionary {
 
 #[cfg(test)]
 mod tests {
-    use std::error::Error;
+    use crate::err::SolverError;
 
     use super::Dictionary;
 
     const TEST_DICT: &str = "src/test/dictionary.txt";
 
     #[test]
-    fn load_filters_out_short_words() -> Result<(), Box<dyn Error>> {
+    fn load_filters_out_short_words() -> Result<(), SolverError> {
         let dict = Dictionary::load_path(TEST_DICT)?;
         assert!(!dict.contains("cat"));
         Ok(())
     }
 
     #[test]
-    fn load_removes_duplicates() -> Result<(), Box<dyn Error>> {
+    fn load_removes_duplicates() -> Result<(), SolverError> {
         let dict = Dictionary::load_path(TEST_DICT)?;
         let mut seen_dogs = false;
         for w in &dict {
@@ -129,7 +130,7 @@ mod tests {
     }
 
     #[test]
-    fn load_normalizes_accents() -> Result<(), Box<dyn Error>> {
+    fn load_normalizes_accents() -> Result<(), SolverError> {
         let dict = Dictionary::load_path(TEST_DICT)?;
         assert!(!dict.contains("éclair"));
         assert!(dict.contains("eclair"));

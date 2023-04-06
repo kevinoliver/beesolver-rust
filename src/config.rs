@@ -1,5 +1,7 @@
 use argh::FromArgs;
 
+use crate::err::SolverError;
+
 #[derive(FromArgs)]
 /// A Spelling Bee solver
 pub struct Config {
@@ -21,10 +23,10 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn validate(&self) -> Result<(), String> {
+    pub fn validate(&self) -> Result<(), SolverError> {
         if let Some(path) = &self.dict {
             if !std::path::Path::new(path).exists() {
-                return Err(format!("dictionary not found: '{path}'"));
+                return Err(SolverError::DictionaryNotFound(path.to_string()));
             }
         }
         Ok(())

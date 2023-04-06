@@ -1,14 +1,16 @@
 pub mod config;
 pub mod dictionary;
+pub mod err;
 pub mod puzzle;
 pub mod solver;
 
-use std::{error::Error, time::Instant};
+use std::time::Instant;
 
 use crate::{config::Config, dictionary::Dictionary};
+use err::SolverError;
 use solver::{Metadata, Solution, Solver};
 
-pub fn run(config: &Config) -> Result<(Solution, Metadata), Box<dyn Error>> {
+pub fn run(config: &Config) -> Result<(Solution, Metadata), SolverError> {
     use puzzle::Puzzle;
 
     config.validate()?;
